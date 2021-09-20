@@ -17,7 +17,8 @@ import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-    val apiKey = BuildConfig.giphy_api_key
+    //val apiKey = BuildConfig.giphy_api_key
+    val apiKey = "YOUR_API_KEY"
     var settings = GPHSettings(gridType = GridType.waterfall, theme = GPHTheme.Light, stickerColumnCount = 3)
     var contentType = GPHContentType.gif
     var feedAdapter: FeedAdapter? = null
