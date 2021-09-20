@@ -1,11 +1,9 @@
 package com.mycorp.giphyapp
 
-import MessageFeedAdapter
-import androidx.appcompat.app.AppCompatActivity
+import FeedAdapter
 import android.os.Bundle
-import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.app.AppCompatActivity
 import com.giphy.sdk.core.models.Media
-import com.giphy.sdk.tracking.isVideo
 import com.giphy.sdk.ui.GPHContentType
 import com.giphy.sdk.ui.GPHSettings
 import com.giphy.sdk.ui.Giphy
@@ -13,7 +11,8 @@ import com.giphy.sdk.ui.themes.GPHTheme
 import com.giphy.sdk.ui.themes.GridType
 import com.giphy.sdk.ui.views.GiphyDialogFragment
 import com.mycorp.giphyapp.databinding.ActivityMainBinding
-import com.mycorp.giphyapp.feed.*
+import com.mycorp.giphyapp.feed.FeedDataItem
+import com.mycorp.giphyapp.feed.GifItem
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -21,8 +20,8 @@ class MainActivity : AppCompatActivity() {
     val apiKey = BuildConfig.giphy_api_key
     var settings = GPHSettings(gridType = GridType.waterfall, theme = GPHTheme.Light, stickerColumnCount = 3)
     var contentType = GPHContentType.gif
-    var feedAdapter: MessageFeedAdapter? = null
-    var messageItems = ArrayList<FeedDataItem>()
+    var feedAdapter: FeedAdapter? = null
+    var gifItems = ArrayList<FeedDataItem>()
 
     companion object {
         val TAG = MainActivity::class.java.simpleName
@@ -53,8 +52,8 @@ class MainActivity : AppCompatActivity() {
     private fun getGifSelectionListener() = object : GiphyDialogFragment.GifSelectionListener {
         override fun onGifSelected(media: Media, searchTerm: String?, selectedContentType: GPHContentType) {
             Timber.d(TAG, "onGifSelected")
-            messageItems.add(GifItem(media, Author.Me))
-            feedAdapter?.notifyItemInserted(messageItems.size - 1)
+            gifItems.add(GifItem(media))
+            feedAdapter?.notifyItemInserted(gifItems.size - 1)
             contentType = selectedContentType
         }
 
@@ -69,16 +68,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFeed() {
-        feedAdapter = MessageFeedAdapter(messageItems)
-        feedAdapter?.itemSelectedListener = ::onGifSelected
-
+        feedAdapter = FeedAdapter(gifItems)
         activityMainBinding.messageFeed.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         activityMainBinding.messageFeed.adapter = feedAdapter
-    }
-
-    private fun onGifSelected(itemData: FeedDataItem) {
-        if (itemData is GifItem) {
-            Timber.d("onItemSelected ${itemData.media}")
-        }
     }
 }

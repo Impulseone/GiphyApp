@@ -8,13 +8,11 @@ import com.mycorp.giphyapp.databinding.GifItemBinding
 import com.mycorp.giphyapp.feed.FeedDataItem
 import com.mycorp.giphyapp.feed.GifItem
 
-class MessageFeedAdapter(val items: MutableList<FeedDataItem>) :
+class FeedAdapter(val items: MutableList<FeedDataItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val ITEM_GIF = 101
     private val ITEM_NONE = 102
-
-    var itemSelectedListener: (item: FeedDataItem) -> Unit = { _ -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -48,9 +46,6 @@ class MessageFeedAdapter(val items: MutableList<FeedDataItem>) :
     inner class GifViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindMessage(message: GifItem) {
             GifItemBinding.bind(itemView).apply {
-                gifView.setOnClickListener {
-                    itemSelectedListener(message)
-                }
                 gifView.setMedia(message.media)
                 gifView.isBackgroundVisible = false
             }
